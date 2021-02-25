@@ -76,6 +76,18 @@ describe("Character", () => {
     attacker.attack(defender);
     expect(defender.getHp()).toBe(1000);
   });
+  test("a character can attack a character of a different faction", () => {
+    const repo = new FactionsRepository();
+    repo.createFaction("evil faction");
+    repo.createFaction("good faction");
+    const attacker = new Character("melee", repo);
+    const defender = new Character("ranged", repo);
+    attacker.joinFaction("evil faction");
+    defender.joinFaction("good faction");
+    attacker.attack(defender);
+    expect(defender.getHp()).toBe(900);
+  });
+
   test("two characters of the same faction can heal each other", () => {
     const repo = new FactionsRepository();
     repo.createFaction("evil faction");
@@ -93,6 +105,14 @@ describe("Character", () => {
     const attacker = new Character("melee", new FactionsRepository());
     const tree = new Thing(2000);
     attacker.attack(tree);
+    expect(tree.getHp()).toBe(1900);
+  });
+
+  test("a thing cannot be healed", () => {
+    const attacker = new Character("melee", new FactionsRepository());
+    const tree = new Thing(2000);
+    attacker.attack(tree);
+    attacker.heal(tree);
     expect(tree.getHp()).toBe(1900);
   });
 });
